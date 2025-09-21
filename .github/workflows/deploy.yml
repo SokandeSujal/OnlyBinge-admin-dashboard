@@ -11,13 +11,23 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'  # Or your preferred version
+
     - name: Inject secrets into JavaScript
       run: |
-        sed -i "s|__SUPABASE_URL__|${{ secrets.SUPABASE_URL }}|" script.js
-        sed -i "s|__SUPABASE_ANON_KEY__|${{ secrets.SUPABASE_ANON_KEY }}|" script.js
+        cp script.js script.js.bak
+        sed -i "s|__SUPABASE_URL__|${{ secrets.SUPABASE_URL }}|g" script.js
+        sed -i "s|__SUPABASE_ANON_KEY__|${{ secrets.SUPABASE_ANON_KEY }}|g" script.js
+        # Quick verification (optional: logs the first few lines without exposing secrets)
+        head -n 5 script.js
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./
+        publish_dir: ./  # Deploys root dir (HTML, CSS, JS)
+        # Optional: Clean up old files before deploy
+        force_orphan: true
