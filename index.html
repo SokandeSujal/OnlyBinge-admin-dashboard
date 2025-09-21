@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Portal</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+      <div class="modal-content">
+        <h1>Admin Login</h1>
+        <form id="login-form">
+          <div class="form-group">
+            <label for="admin-email">Email</label>
+            <input
+              type="email"
+              id="admin-email"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="admin-password">Password</label>
+            <input
+              type="password"
+              id="admin-password"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+          <button type="submit" class="btn-primary">Login</button>
+        </form>
+        <div id="login-error" class="error hidden">
+          Invalid credentials. Please try again.
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard hidden">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <nav class="nav">
+          <a href="#" class="nav-item active" data-section="dashboard">
+            <span class="icon">🏠</span>
+          </a>
+          <a href="#" class="nav-item" data-section="add-user">
+            <span class="icon">➕</span>
+          </a>
+          <a href="#" class="nav-item" data-section="users">
+            <span class="icon">👥</span>
+          </a>
+          <button id="logout-btn" class="nav-item logout">
+            <span class="icon">🔌</span>
+          </button>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main">
+        <!-- Header -->
+        <header class="header">
+          <div class="header-left">
+            <h1>Admin Portal</h1>
+            <select class="project-selector">
+              <option>iOS App Project</option>
+            </select>
+          </div>
+          <div class="header-right">
+            <span class="date">Today, Sep 21</span>
+          </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content">
+          <!-- Dashboard Section (default) -->
+          <section id="dashboard-section" class="section active">
+            <h2>Welcome to the Dashboard</h2>
+            <p>Manage user access below.</p>
+          </section>
+
+          <!-- Add User Section -->
+          <section id="add-user-section" class="section hidden">
+            <h2>Add User by Email</h2>
+            <form id="add-user-form">
+              <div class="form-group">
+                <input
+                  type="email"
+                  id="new-user-email"
+                  placeholder="Enter email address"
+                  required
+                />
+              </div>
+              <button type="submit" class="btn-primary">Add User</button>
+            </form>
+            <div id="add-user-msg" class="msg hidden"></div>
+          </section>
+
+          <!-- Users Section -->
+          <section id="users-section" class="section hidden">
+            <h2>Approved Users</h2>
+            <ul id="user-list" class="user-list"></ul>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
