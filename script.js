@@ -1,1 +1,83 @@
-const _0x4715eb=_0x2799;(function(_0xb260c5,_0x2c7548){const _0x1d5e96=_0x2799,_0x126e1d=_0xb260c5();while(!![]){try{const _0x20e396=parseInt(_0x1d5e96(0xd0))/0x1*(parseInt(_0x1d5e96(0x101))/0x2)+-parseInt(_0x1d5e96(0xe7))/0x3+-parseInt(_0x1d5e96(0x107))/0x4+parseInt(_0x1d5e96(0x100))/0x5*(parseInt(_0x1d5e96(0x106))/0x6)+parseInt(_0x1d5e96(0xe9))/0x7*(parseInt(_0x1d5e96(0xe8))/0x8)+parseInt(_0x1d5e96(0x109))/0x9+-parseInt(_0x1d5e96(0xf3))/0xa;if(_0x20e396===_0x2c7548)break;else _0x126e1d['push'](_0x126e1d['shift']());}catch(_0xedbc50){_0x126e1d['push'](_0x126e1d['shift']());}}}(_0x40ac,0x20a3b));const SUPABASE_URL=_0x4715eb(0xf8),SUPABASE_ANON_KEY=_0x4715eb(0xe2),supabase=window[_0x4715eb(0xd4)][_0x4715eb(0xe5)](SUPABASE_URL,SUPABASE_ANON_KEY);function _0x2799(_0x5f3df8,_0x586755){const _0x40ac8a=_0x40ac();return _0x2799=function(_0x279984,_0x56c0b6){_0x279984=_0x279984-0xcd;let _0x4a5f3a=_0x40ac8a[_0x279984];return _0x4a5f3a;},_0x2799(_0x5f3df8,_0x586755);}let adminUser=null;const loginModal=document[_0x4715eb(0xd5)](_0x4715eb(0xf5)),dashboard=document[_0x4715eb(0xd5)](_0x4715eb(0xf4)),loginForm=document[_0x4715eb(0xd5)](_0x4715eb(0xd3)),loginError=document['getElementById'](_0x4715eb(0xce)),logoutBtn=document[_0x4715eb(0xd5)](_0x4715eb(0xe4)),addUserForm=document[_0x4715eb(0xd5)](_0x4715eb(0xf9)),newUserEmail=document[_0x4715eb(0xd5)](_0x4715eb(0xe6)),addUserMsg=document['getElementById'](_0x4715eb(0xdf)),userList=document[_0x4715eb(0xd5)](_0x4715eb(0xf0)),navItems=document[_0x4715eb(0xd7)](_0x4715eb(0xe3)),sections=document[_0x4715eb(0xd7)](_0x4715eb(0x108));loginForm[_0x4715eb(0xed)](_0x4715eb(0xda),async _0x3268e0=>{const _0x57864a=_0x4715eb;_0x3268e0[_0x57864a(0xdc)]();const _0x424def=document[_0x57864a(0xd5)](_0x57864a(0xf1))[_0x57864a(0xde)],_0x66d87c=document[_0x57864a(0xd5)](_0x57864a(0xd9))[_0x57864a(0xde)],{data:_0x117a39,error:_0x47b4bf}=await supabase[_0x57864a(0xfe)][_0x57864a(0xec)]({'email':_0x424def,'password':_0x66d87c});if(_0x47b4bf){loginError['textContent']=_0x47b4bf[_0x57864a(0xd1)],loginError['classList'][_0x57864a(0xdb)]('hidden');return;}adminUser=_0x117a39[_0x57864a(0xe1)],loginModal[_0x57864a(0xeb)][_0x57864a(0xff)](_0x57864a(0xfb)),dashboard['classList'][_0x57864a(0xdb)](_0x57864a(0xfb)),loginError['classList']['add'](_0x57864a(0xfb)),showSection(_0x57864a(0xf4)),loadUsers();}),logoutBtn[_0x4715eb(0xed)](_0x4715eb(0xfa),async()=>{const _0x5062fe=_0x4715eb;await supabase[_0x5062fe(0xfe)]['signOut'](),adminUser=null,dashboard['classList'][_0x5062fe(0xff)](_0x5062fe(0xfb)),loginModal[_0x5062fe(0xeb)]['remove'](_0x5062fe(0xfb)),document[_0x5062fe(0xd5)](_0x5062fe(0xf1))[_0x5062fe(0xde)]='',document[_0x5062fe(0xd5)](_0x5062fe(0xd9))[_0x5062fe(0xde)]='',loginError[_0x5062fe(0xeb)][_0x5062fe(0xff)]('hidden');}),navItems[_0x4715eb(0xea)](_0x577cff=>{const _0x14cab8=_0x4715eb;_0x577cff[_0x14cab8(0xed)](_0x14cab8(0xfa),_0x1d75b5=>{const _0x4fd475=_0x14cab8;_0x1d75b5[_0x4fd475(0xdc)]();const _0x55dcfe=_0x577cff[_0x4fd475(0xf6)][_0x4fd475(0xee)];if(_0x55dcfe==='logout'){logoutBtn[_0x4fd475(0xfa)]();return;}showSection(_0x55dcfe),updateActiveNav(_0x577cff);});});function showSection(_0x19c382){const _0x1c681d=_0x4715eb;sections[_0x1c681d(0xea)](_0x5996cb=>_0x5996cb['classList'][_0x1c681d(0xff)](_0x1c681d(0xfb))),document[_0x1c681d(0xd5)](_0x19c382+_0x1c681d(0xf2))['classList'][_0x1c681d(0xdb)]('hidden');}function updateActiveNav(_0xba53c0){const _0x197818=_0x4715eb;navItems[_0x197818(0xea)](_0x324ebe=>_0x324ebe['classList'][_0x197818(0xdb)](_0x197818(0xd6))),_0xba53c0[_0x197818(0xeb)]['add'](_0x197818(0xd6));}function _0x40ac(){const _0x3be5f9=['insert','user-list','admin-email','-section','1776060PRyBXa','dashboard','login-modal','dataset','select','__SUPABASE_URL__','add-user-form','click','hidden','color','\x20added\x20successfully!','auth','add','2635TuwmYo','1476vZTkgC','email','from','error','appendChild','366EtAvRl','959376ahJqov','.section','1698435UtzPXF','style','login-error','textContent','291DHkZDG','message','red','login-form','supabase','getElementById','active','querySelectorAll','allowed_users','admin-password','submit','remove','preventDefault','createElement','value','add-user-msg','success','user','__SUPABASE_ANON_KEY__','.nav-item[data-section]','logout-btn','createClient','new-user-email','118305MXedCu','16752uyFtjy','518iHqhXr','forEach','classList','signInWithPassword','addEventListener','section'];_0x40ac=function(){return _0x3be5f9;};return _0x40ac();}addUserForm['addEventListener']('submit',async _0x2de029=>{const _0x455ae2=_0x4715eb;_0x2de029[_0x455ae2(0xdc)]();const _0xc34d08=newUserEmail['value']['trim']();if(!_0xc34d08)return;const {error:_0x439f24}=await supabase['from']('allowed_users')[_0x455ae2(0xef)]({'email':_0xc34d08});if(_0x439f24){addUserMsg[_0x455ae2(0xcf)]='Error\x20adding\x20user.',addUserMsg[_0x455ae2(0xeb)]['remove'](_0x455ae2(0xfb)),addUserMsg[_0x455ae2(0xcd)][_0x455ae2(0xfc)]=_0x455ae2(0xd2),addUserMsg['classList']['add'](_0x455ae2(0x104)),addUserMsg['classList'][_0x455ae2(0xdb)](_0x455ae2(0xe0)),console[_0x455ae2(0x104)](_0x439f24);return;}addUserMsg['textContent']='User\x20'+_0xc34d08+_0x455ae2(0xfd),addUserMsg[_0x455ae2(0xeb)][_0x455ae2(0xdb)](_0x455ae2(0xfb)),addUserMsg[_0x455ae2(0xcd)][_0x455ae2(0xfc)]='green',addUserMsg[_0x455ae2(0xeb)][_0x455ae2(0xff)](_0x455ae2(0xe0)),addUserMsg[_0x455ae2(0xeb)][_0x455ae2(0xdb)]('error'),newUserEmail[_0x455ae2(0xde)]='',loadUsers();});async function loadUsers(){const _0x1135a3=_0x4715eb,{data:_0x447388,error:_0x2a35c1}=await supabase[_0x1135a3(0x103)](_0x1135a3(0xd8))[_0x1135a3(0xf7)](_0x1135a3(0x102));if(_0x2a35c1)return;userList['innerHTML']='',_0x447388[_0x1135a3(0xea)](_0x28ba59=>{const _0x4118e4=_0x1135a3,_0x4e35b3=document[_0x4118e4(0xdd)]('li');_0x4e35b3[_0x4118e4(0xcf)]=_0x28ba59[_0x4118e4(0x102)],userList[_0x4118e4(0x105)](_0x4e35b3);});}
+// script.js
+const SUPABASE_URL = "__SUPABASE_URL__";
+const SUPABASE_ANON_KEY = "__SUPABASE_ANON_KEY__";
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let adminUser = null;
+
+// DOM
+const loginModal = document.getElementById('login-modal');
+const dashboard = document.getElementById('dashboard');
+const loginForm = document.getElementById('login-form');
+const loginError = document.getElementById('login-error');
+const logoutBtn = document.getElementById('logout-btn');
+const addUserForm = document.getElementById('add-user-form');
+const newUserEmail = document.getElementById('new-user-email');
+const addUserMsg = document.getElementById('add-user-msg');
+const userList = document.getElementById('user-list');
+
+// Login
+loginForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  const email = document.getElementById('admin-email').value;
+  const password = document.getElementById('admin-password').value;
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) {
+    loginError.textContent = error.message;
+    loginError.classList.remove('hidden');
+    return;
+  }
+
+  adminUser = data.user;
+  loginModal.classList.add('hidden');
+  dashboard.classList.remove('hidden');
+  loginError.classList.add('hidden');
+  loadUsers();
+});
+
+// Logout
+logoutBtn.addEventListener('click', async () => {
+  await supabase.auth.signOut();
+  adminUser = null;
+  dashboard.classList.add('hidden');
+  loginModal.classList.remove('hidden');
+  document.getElementById('admin-email').value = '';
+  document.getElementById('admin-password').value = '';
+});
+
+// Add user
+addUserForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  const email = newUserEmail.value.trim();
+  if (!email) return;
+
+  const { error } = await supabase.from('allowed_users').insert({ email });
+  if (error) {
+    addUserMsg.textContent = 'Error adding user.';
+    addUserMsg.classList.remove('hidden');
+    addUserMsg.style.color = 'red';
+    console.error(error);
+    return;
+  }
+
+  addUserMsg.textContent = `User ${email} added successfully!`;
+  addUserMsg.style.color = 'green';
+  addUserMsg.classList.remove('hidden');
+  newUserEmail.value = '';
+  loadUsers();
+});
+
+// Load users
+async function loadUsers() {
+  const { data: users, error } = await supabase.from('allowed_users').select('email');
+  if (error) return;
+
+  userList.innerHTML = '';
+  users.forEach(u => {
+    const li = document.createElement('li');
+    li.textContent = u.email;
+    userList.appendChild(li);
+  });
+}
