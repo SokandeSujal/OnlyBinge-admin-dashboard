@@ -21,6 +21,7 @@ jobs:
         cp script.js script.js.bak
         sed -i "s|__SUPABASE_URL__|${{ secrets.SUPABASE_URL }}|g" script.js
         sed -i "s|__SUPABASE_ANON_KEY__|${{ secrets.SUPABASE_ANON_KEY }}|g" script.js
+        sed -i "s|__SUPABASE_SERVICE_ROLE_KEY__|${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}|g" script.js
         # Quick verification (optional: logs the first few lines without exposing secrets)
         head -n 5 script.js
 
