@@ -16,9 +16,6 @@ jobs:
       with:
         node-version: '20'  # Or your preferred version
 
-    - name: Install dependencies
-      run: npm install  # Make sure you install any necessary dependencies
-
     - name: Inject secrets into JavaScript
       run: |
         cp admin-portal.js admin-portal.js.bak
@@ -28,20 +25,9 @@ jobs:
         # Quick verification (logs first few lines without exposing secrets)
         head -n 5 admin-portal.js
 
-    - name: Inject secrets into CSS (if needed)
-      run: |
-        cp admin-portal.css admin-portal.css.bak
-        # If you have any dynamic data to inject into CSS, you can use a similar approach
-        # For example, if you have custom properties or environment-specific values in the CSS
-        # sed -i "s|__CUSTOM_PROPERTY__|${{ secrets.CUSTOM_PROPERTY }}|g" admin-portal.css
-        head -n 5 admin-portal.css  # Quick verification, though it's less common to inject secrets into CSS
-
-    - name: Build the app (if needed)
-      run: npm run build  # Adjust this if you have a build step (e.g., for React or Vue.js)
-
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./  # You might want to specify the output directory of your build (e.g., `./build` or `./dist`)
+        publish_dir: ./  # Make sure this is the right directory for your files
         force_orphan: true
