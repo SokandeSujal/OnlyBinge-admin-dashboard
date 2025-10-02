@@ -3,36 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Portal</title>
-    <link rel="stylesheet" href="style.css" />
+    <title>ONLYBINGE ADMIN</title>
+    <link rel="stylesheet" href="admin-portal.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
     <!-- Login Modal -->
     <div id="login-modal" class="modal">
+      <div class="modal-backdrop"></div>
       <div class="modal-content">
-        <h1>Admin Login</h1>
+        <div class="modal-logo">
+          <h1>ONLYBINGE</h1>
+          <p>Admin Portal</p>
+        </div>
         <form id="login-form">
           <div class="form-group">
-            <label for="admin-email">Email</label>
-            <input
-              type="email"
-              id="admin-email"
-              placeholder="Enter your email"
-              required
-            />
+            <input type="email" id="admin-email" required />
+            <label for="admin-email">Admin Email</label>
           </div>
           <div class="form-group">
-            <label for="admin-password">Password</label>
-            <input
-              type="password"
-              id="admin-password"
-              placeholder="Enter your password"
-              required
-            />
+            <input type="password" id="admin-password" required />
+            <label for="admin-password">Admin Password</label>
           </div>
-          <button type="submit" class="btn-primary">Login</button>
+          <div id="login-error" class="error hidden"></div>
+          <button type="submit" class="btn-primary">
+            <i class="fas fa-sign-in-alt"></i> Admin Login
+          </button>
         </form>
-        <div id="login-error" class="error hidden"></div>
       </div>
     </div>
 
@@ -40,25 +41,35 @@
     <div id="dashboard" class="dashboard hidden">
       <!-- Sidebar -->
       <aside class="sidebar">
+        <div class="sidebar-header">
+          <h2>ONLYBINGE</h2>
+          <p>Admin</p>
+        </div>
         <nav class="nav">
-          <a href="#" class="nav-item active" data-section="users">
-            <span class="icon">👥</span>
+          <a href="#" class="nav-item active" data-section="overview">
+            <i class="fas fa-tachometer-alt"></i> Overview
+          </a>
+          <a href="#" class="nav-item" data-section="users">
+            <i class="fas fa-users"></i> Users
           </a>
           <a href="#" class="nav-item" data-section="add-user">
-            <span class="icon">➕</span>
+            <i class="fas fa-user-plus"></i> Add User
+          </a>
+          <a href="#" class="nav-item" data-section="payments">
+            <i class="fas fa-credit-card"></i> Payments
           </a>
           <a href="#" class="nav-item" data-section="search-history">
-            <span class="icon">🔍</span>
+            <i class="fas fa-search"></i> Search History
           </a>
           <a href="#" class="nav-item" data-section="watch-history">
-            <span class="icon">▶️</span>
+            <i class="fas fa-play-circle"></i> Watch History
           </a>
           <a href="#" class="nav-item" data-section="bookmarks">
-            <span class="icon">⭐</span>
+            <i class="fas fa-bookmark"></i> Bookmarks
           </a>
-          <button id="logout-btn" class="nav-item logout">
-            <span class="icon">🔌</span>
-          </button>
+          <a href="#" class="nav-item logout" id="logout-btn">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
         </nav>
       </aside>
 
@@ -67,64 +78,232 @@
         <!-- Header -->
         <header class="header">
           <div class="header-left">
-            <h1>Stats</h1>
-            <select class="project-selector">
-              <option>iOS App Project</option>
-            </select>
+            <h1 id="section-title">Dashboard Overview</h1>
           </div>
           <div class="header-right">
-            <span class="date">Today, Sep 21</span>
+            <div class="date" id="current-date"></div>
+            <div class="admin-info">
+              <i class="fas fa-user-shield"></i>
+              <span id="admin-email-display"></span>
+            </div>
           </div>
         </header>
 
         <!-- Content -->
         <div class="content">
-          <!-- Approved Users Section -->
-          <section id="users-section" class="section active">
-            <h2>Approved Users</h2>
-            <ul id="user-list" class="user-list"></ul>
+          <!-- Overview Section -->
+          <section id="overview" class="section active">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>Total Users</h3>
+                  <div class="stat-value" id="total-users">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon success">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>Active Subscriptions</h3>
+                  <div class="stat-value" id="active-subs">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon warning">
+                  <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>Pending Users</h3>
+                  <div class="stat-value" id="pending-users">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon warning">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>Pending Payments</h3>
+                  <div class="stat-value" id="pending-payments-count">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon error">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>Expired</h3>
+                  <div class="stat-value" id="expired-subs">0</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="recent-activity">
+              <h2>Recent Activity</h2>
+              <div class="activity-list" id="recent-activity">
+                <!-- Dynamic content -->
+              </div>
+            </div>
+          </section>
+
+          <!-- Users Section -->
+          <section id="users" class="section">
+            <div class="section-header">
+              <h2>Manage Users</h2>
+              <div class="filter-group">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="active">Active</button>
+                <button class="filter-btn" data-filter="pending">
+                  Pending
+                </button>
+                <button class="filter-btn" data-filter="expired">
+                  Expired
+                </button>
+              </div>
+            </div>
+            <div class="user-grid" id="user-list">
+              <!-- Dynamic content -->
+            </div>
           </section>
 
           <!-- Add User Section -->
-          <section id="add-user-section" class="section hidden">
-            <h2>Add User by Email</h2>
-            <form id="add-user-form">
-              <div class="form-group">
-                <input
-                  type="email"
-                  id="new-user-email"
-                  placeholder="Enter email address"
-                  required
-                />
-              </div>
-              <button type="submit" class="btn-primary">Add User</button>
-            </form>
-            <div id="add-user-msg" class="msg hidden"></div>
+          <section id="add-user" class="section">
+            <div class="form-container">
+              <h2>Add New User</h2>
+              <form id="add-user-form">
+                <div class="form-group">
+                  <input type="email" id="new-user-email" required />
+                  <label for="new-user-email">User Email</label>
+                </div>
+                <div class="form-group">
+                  <select id="subscription-duration" required>
+                    <option value="">Select Duration</option>
+                    <option value="1">1 Month</option>
+                    <option value="3">3 Months</option>
+                    <option value="6">6 Months</option>
+                    <option value="12">12 Months</option>
+                  </select>
+                  <label for="subscription-duration"
+                    >Subscription Duration</label
+                  >
+                </div>
+                <button type="submit" class="btn-primary">Add User</button>
+              </form>
+            </div>
+          </section>
+
+          <!-- Payments Section -->
+          <section id="payments" class="section">
+            <div class="section-header">
+              <h2>Pending Payment Approvals</h2>
+            </div>
+            <div class="payments-grid" id="pending-payments-list">
+              <!-- Dynamic content -->
+            </div>
           </section>
 
           <!-- Search History Section -->
-          <section id="search-history-section" class="section hidden">
-            <h2>User Search History</h2>
-            <ul id="search-list" class="history-list"></ul>
+          <section id="search-history" class="section">
+            <div class="section-header">
+              <h2>User Search History</h2>
+              <div
+                class="search-filter"
+                id="search-filter"
+                placeholder="Filter searches..."
+              ></div>
+            </div>
+            <div class="history-table" id="search-list">
+              <!-- Dynamic content -->
+            </div>
           </section>
 
           <!-- Watch History Section -->
-          <section id="watch-history-section" class="section hidden">
-            <h2>User Watch History</h2>
-            <ul id="watch-list" class="history-list"></ul>
+          <section id="watch-history" class="section">
+            <div class="section-header">
+              <h2>User Watch History</h2>
+              <div
+                class="search-filter"
+                id="watch-filter"
+                placeholder="Filter watches..."
+              ></div>
+            </div>
+            <div class="history-table" id="watch-list">
+              <!-- Dynamic content -->
+            </div>
           </section>
 
           <!-- Bookmarks Section -->
-          <section id="bookmarks-section" class="section hidden">
-            <h2>User Bookmarks</h2>
-            <ul id="bookmark-list" class="history-list"></ul>
+          <section id="bookmarks" class="section">
+            <div class="section-header">
+              <h2>User Bookmarks</h2>
+              <div
+                class="search-filter"
+                id="bookmark-filter"
+                placeholder="Filter bookmarks..."
+              ></div>
+            </div>
+            <div class="history-table" id="bookmark-list">
+              <!-- Dynamic content -->
+            </div>
           </section>
         </div>
       </main>
     </div>
 
-    <!-- Supabase Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="script.js"></script>
+    <!-- User Detail Modal -->
+    <div id="user-detail-modal" class="modal hidden">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content large">
+        <div class="modal-close" id="close-user-detail">&times;</div>
+        <div id="user-detail-content">
+          <!-- Dynamic content -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Allow User Modal -->
+    <div id="allow-user-modal" class="modal hidden">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <div class="modal-close" onclick="closeAllowModal()">&times;</div>
+        <div class="modal-logo">
+          <h1>Approve User</h1>
+          <p>Grant subscription access to this user</p>
+        </div>
+        <form id="allow-user-form">
+          <div class="form-group">
+            <input type="email" id="allow-user-email" required disabled />
+            <label for="allow-user-email">User Email</label>
+          </div>
+          <div class="form-group">
+            <select id="allow-duration" required>
+              <option value="">Select Duration</option>
+              <option value="1">1 Month</option>
+              <option value="3">3 Months</option>
+              <option value="6">6 Months</option>
+              <option value="12">12 Months</option>
+            </select>
+            <label for="allow-duration">Subscription Duration</label>
+          </div>
+          <button type="submit" class="btn-primary">Approve User</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+      <div class="loader">
+        <div class="loader-spinner"></div>
+        <div class="loader-text">ONLYBINGE</div>
+      </div>
+    </div>
+
+    <script src="admin-portal.js"></script>
   </body>
 </html>
