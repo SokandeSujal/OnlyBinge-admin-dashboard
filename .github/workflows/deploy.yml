@@ -8,7 +8,7 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
+    - name: Checkout code
       uses: actions/checkout@v4
 
     - name: Setup Node.js
@@ -16,19 +16,32 @@ jobs:
       with:
         node-version: '20'  # Or your preferred version
 
+    - name: Install dependencies
+      run: npm install  # Make sure you install any necessary dependencies
+
     - name: Inject secrets into JavaScript
       run: |
-        cp script.js script.js.bak
-        sed -i "s|__SUPABASE_URL__|${{ secrets.SUPABASE_URL }}|g" script.js
-        sed -i "s|__SUPABASE_ANON_KEY__|${{ secrets.SUPABASE_ANON_KEY }}|g" script.js
-        sed -i "s|__SUPABASE_SERVICE_ROLE_KEY__|${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}|g" script.js
-        # Quick verification (optional: logs the first few lines without exposing secrets)
-        head -n 5 script.js
+        cp admin-portal.js admin-portal.js.bak
+        sed -i "s|__SUPABASE_URL__|${{ secrets.SUPABASE_URL }}|g" admin-portal.js
+        sed -i "s|__SUPABASE_ANON_KEY__|${{ secrets.SUPABASE_ANON_KEY }}|g" admin-portal.js
+        sed -i "s|__SUPABASE_SERVICE_ROLE_KEY__|${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}|g" admin-portal.js
+        # Quick verification (logs first few lines without exposing secrets)
+        head -n 5 admin-portal.js
+
+    - name: Inject secrets into CSS (if needed)
+      run: |
+        cp admin-portal.css admin-portal.css.bak
+        # If you have any dynamic data to inject into CSS, you can use a similar approach
+        # For example, if you have custom properties or environment-specific values in the CSS
+        # sed -i "s|__CUSTOM_PROPERTY__|${{ secrets.CUSTOM_PROPERTY }}|g" admin-portal.css
+        head -n 5 admin-portal.css  # Quick verification, though it's less common to inject secrets into CSS
+
+    - name: Build the app (if needed)
+      run: npm run build  # Adjust this if you have a build step (e.g., for React or Vue.js)
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./  # Deploys root dir (HTML, CSS, JS)
-        # Optional: Clean up old files before deploy
+        publish_dir: ./  # You might want to specify the output directory of your build (e.g., `./build` or `./dist`)
         force_orphan: true
