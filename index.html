@@ -4,12 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ONLYBINGE ADMIN</title>
-    <link rel="stylesheet" href="admin-portal.css" />
+    <link rel="stylesheet" href="admin-portal-enhanced.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
   </head>
   <body>
     <!-- Login Modal -->
@@ -39,39 +40,56 @@
 
     <!-- Dashboard -->
     <div id="dashboard" class="dashboard hidden">
+      <!-- Mobile Header -->
+      <div class="mobile-header">
+        <button class="hamburger-btn" id="hamburger-btn">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="mobile-logo">ONLYBINGE</div>
+        <div class="mobile-admin-icon">
+          <i class="fas fa-user-shield"></i>
+        </div>
+      </div>
+
       <!-- Sidebar -->
-      <aside class="sidebar">
+      <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
           <h2>ONLYBINGE</h2>
           <p>Admin</p>
         </div>
         <nav class="nav">
           <a href="#" class="nav-item active" data-section="overview">
-            <i class="fas fa-tachometer-alt"></i> Overview
+            <i class="fas fa-tachometer-alt"></i> <span>Overview</span>
+          </a>
+          <a href="#" class="nav-item" data-section="analytics">
+            <i class="fas fa-chart-line"></i> <span>Analytics</span>
           </a>
           <a href="#" class="nav-item" data-section="users">
-            <i class="fas fa-users"></i> Users
+            <i class="fas fa-users"></i> <span>Users</span>
           </a>
           <a href="#" class="nav-item" data-section="add-user">
-            <i class="fas fa-user-plus"></i> Add User
+            <i class="fas fa-user-plus"></i> <span>Add User</span>
           </a>
           <a href="#" class="nav-item" data-section="payments">
-            <i class="fas fa-credit-card"></i> Payments
+            <i class="fas fa-credit-card"></i> <span>Payments</span>
           </a>
           <a href="#" class="nav-item" data-section="search-history">
-            <i class="fas fa-search"></i> Search History
+            <i class="fas fa-search"></i> <span>Search History</span>
           </a>
           <a href="#" class="nav-item" data-section="watch-history">
-            <i class="fas fa-play-circle"></i> Watch History
+            <i class="fas fa-play-circle"></i> <span>Watch History</span>
           </a>
           <a href="#" class="nav-item" data-section="bookmarks">
-            <i class="fas fa-bookmark"></i> Bookmarks
+            <i class="fas fa-bookmark"></i> <span>Bookmarks</span>
           </a>
           <a href="#" class="nav-item logout" id="logout-btn">
-            <i class="fas fa-sign-out-alt"></i> Logout
+            <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
           </a>
         </nav>
       </aside>
+
+      <!-- Sidebar Overlay for Mobile -->
+      <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
       <!-- Main Content -->
       <main class="main">
@@ -141,6 +159,14 @@
               </div>
             </div>
 
+            <!-- Expiring Soon Widget -->
+            <div class="expiring-soon-widget">
+              <h2><i class="fas fa-clock"></i> Expiring Soon</h2>
+              <div class="expiring-list" id="expiring-list">
+                <!-- Dynamic content -->
+              </div>
+            </div>
+
             <div class="recent-activity">
               <h2>Recent Activity</h2>
               <div class="activity-list" id="recent-activity">
@@ -149,19 +175,114 @@
             </div>
           </section>
 
+          <!-- Analytics Section (NEW) -->
+          <section id="analytics" class="section">
+            <div class="analytics-header">
+              <h2>Analytics Dashboard</h2>
+              <div class="date-filter">
+                <select id="analytics-period">
+                  <option value="7">Last 7 Days</option>
+                  <option value="30" selected>Last 30 Days</option>
+                  <option value="90">Last 90 Days</option>
+                  <option value="all">All Time</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Analytics Stats -->
+            <div class="analytics-stats">
+              <div class="analytics-card">
+                <div class="analytics-card-header">
+                  <h3>Total Watch Time</h3>
+                  <i class="fas fa-clock"></i>
+                </div>
+                <div class="analytics-value" id="total-watch-time">0 hrs</div>
+              </div>
+              <div class="analytics-card">
+                <div class="analytics-card-header">
+                  <h3>Total Searches</h3>
+                  <i class="fas fa-search"></i>
+                </div>
+                <div class="analytics-value" id="total-searches">0</div>
+              </div>
+              <div class="analytics-card">
+                <div class="analytics-card-header">
+                  <h3>Total Bookmarks</h3>
+                  <i class="fas fa-bookmark"></i>
+                </div>
+                <div class="analytics-value" id="total-bookmarks">0</div>
+              </div>
+              <div class="analytics-card">
+                <div class="analytics-card-header">
+                  <h3>Avg. Completion Rate</h3>
+                  <i class="fas fa-percentage"></i>
+                </div>
+                <div class="analytics-value" id="completion-rate">0%</div>
+              </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-grid">
+              <div class="chart-container">
+                <h3>Most Watched Content</h3>
+                <canvas id="mostWatchedChart"></canvas>
+              </div>
+              <div class="chart-container">
+                <h3>Popular Searches</h3>
+                <canvas id="popularSearchesChart"></canvas>
+              </div>
+              <div class="chart-container">
+                <h3>Content Type Distribution</h3>
+                <canvas id="contentTypeChart"></canvas>
+              </div>
+              <div class="chart-container">
+                <h3>User Engagement Over Time</h3>
+                <canvas id="engagementChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Top Lists -->
+            <div class="top-lists">
+              <div class="top-list-card">
+                <h3><i class="fas fa-fire"></i> Top 10 Most Watched</h3>
+                <div id="top-watched-list" class="top-list">
+                  <!-- Dynamic content -->
+                </div>
+              </div>
+              <div class="top-list-card">
+                <h3><i class="fas fa-star"></i> Top 10 Most Bookmarked</h3>
+                <div id="top-bookmarked-list" class="top-list">
+                  <!-- Dynamic content -->
+                </div>
+              </div>
+            </div>
+          </section>
+
           <!-- Users Section -->
           <section id="users" class="section">
             <div class="section-header">
               <h2>Manage Users</h2>
-              <div class="filter-group">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="active">Active</button>
-                <button class="filter-btn" data-filter="pending">
-                  Pending
-                </button>
-                <button class="filter-btn" data-filter="expired">
-                  Expired
-                </button>
+              <div class="section-actions">
+                <input
+                  type="text"
+                  class="search-input"
+                  id="user-search"
+                  placeholder="Search users..."
+                />
+                <div class="filter-group">
+                  <button class="filter-btn active" data-filter="all">
+                    All
+                  </button>
+                  <button class="filter-btn" data-filter="active">
+                    Active
+                  </button>
+                  <button class="filter-btn" data-filter="pending">
+                    Pending
+                  </button>
+                  <button class="filter-btn" data-filter="expired">
+                    Expired
+                  </button>
+                </div>
               </div>
             </div>
             <div class="user-grid" id="user-list">
@@ -209,11 +330,12 @@
           <section id="search-history" class="section">
             <div class="section-header">
               <h2>User Search History</h2>
-              <div
-                class="search-filter"
+              <input
+                type="text"
+                class="search-input"
                 id="search-filter"
                 placeholder="Filter searches..."
-              ></div>
+              />
             </div>
             <div class="history-table" id="search-list">
               <!-- Dynamic content -->
@@ -224,11 +346,12 @@
           <section id="watch-history" class="section">
             <div class="section-header">
               <h2>User Watch History</h2>
-              <div
-                class="search-filter"
+              <input
+                type="text"
+                class="search-input"
                 id="watch-filter"
                 placeholder="Filter watches..."
-              ></div>
+              />
             </div>
             <div class="history-table" id="watch-list">
               <!-- Dynamic content -->
@@ -239,11 +362,12 @@
           <section id="bookmarks" class="section">
             <div class="section-header">
               <h2>User Bookmarks</h2>
-              <div
-                class="search-filter"
+              <input
+                type="text"
+                class="search-input"
                 id="bookmark-filter"
                 placeholder="Filter bookmarks..."
-              ></div>
+              />
             </div>
             <div class="history-table" id="bookmark-list">
               <!-- Dynamic content -->
@@ -304,6 +428,6 @@
       </div>
     </div>
 
-    <script src="admin-portal.js"></script>
+    <script src="admin-portal-enhanced.js"></script>
   </body>
 </html>
