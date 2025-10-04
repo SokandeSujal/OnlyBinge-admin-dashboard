@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ONLYBINGE ADMIN</title>
+    <link rel="stylesheet" href="admin-portal-enhanced.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  </head>
+  <body>
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <div class="modal-logo">
+          <h1>ONLYBINGE</h1>
+          <p>Admin Portal</p>
+        </div>
+        <form id="login-form">
+          <div class="form-group">
+            <input type="email" id="admin-email" required />
+            <label for="admin-email">Admin Email</label>
+          </div>
+          <div class="form-group">
+            <input type="password" id="admin-password" required />
+            <label for="admin-password">Admin Password</label>
+          </div>
+          <div id="login-error" class="error hidden"></div>
+          <button type="submit" class="btn-primary">
+            <i class="fas fa-sign-in-alt"></i> Admin Login
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard hidden">
+      <!-- Mobile Header -->
+      <div class="mobile-header">
+        <button class="hamburger-btn" id="hamburger-btn">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="mobile-logo">ONLYBINGE</div>
+        <div class="mobile-admin-icon">
+          <i class="fas fa-user-shield"></i>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <h2>ONLYBINGE</h2>
+          <p>Admin</p>
+        </div>
+        <nav class="nav">
+          <a href="#" class="nav-item active" data-section="overview">
+            <i class="fas fa-tachometer-alt"></i> <span>Overview</span>
+          </a>
+          <a href="#" class="nav-item" data-section="analytics">
+            <i class="fas fa-chart-line"></i> <span>Analytics</span>
+          </a>
+          <a href="#" class="nav-item" data-section="users">
+            <i class="fas fa-users"></i> <span>Users</span>
+          </a>
+          <a href="#" class="nav-item" data-section="add-user">
+            <i class="fas fa-user-plus"></i> <span>Add User</span>
+          </a>
+          <a href="#" class="nav-item" data-section="payments">
+            <i class="fas fa-credit-card"></i> <span>Payments</span>
+          </a>
+          <a href="#" class="nav-item" data-section="search-history">
+            <i class="fas fa-search"></i> <span>Search History</span>
+          </a>
+          <a href="#" class="nav-item" data-section="watch-history">
+            <i class="fas fa-play-circle"></i> <span>Watch History</span>
+          </a>
+          <a href="#" class="nav-item" data-section="bookmarks">
+            <i class="fas fa-bookmark"></i> <span>Bookmarks</span>
+          </a>
+          <a href="#" class="nav-item logout" id="logout-btn">
+            <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+          </a>
+        </nav>
+      </aside>
+
+      <!-- Sidebar Overlay for Mobile -->
+      <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+      <!-- Main Content -->
+      <main class="main">
+        <!-- Header -->
+        <header class="header">
+          <div class="header-left">
+            <h1 id="section-title">Dashboard Overview</h1>
+          </div>
+          <div class="header-right">
+            <div class="date" id="current-date"></div>
+            <div class="admin-info">
+              <i class="fas fa-user-shield"></i>
+              <span id="admin-email-display"></span>
+            </div>
+          </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content">
+          <!-- Overview Section -->
+          <section id="overview" class="section active">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>Total Users</h3>
+                  <div class="stat-value" id="total-users">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon success">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>Active Subscriptions</h3>
+                  <div class="stat-value" id="active-subs">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon warning">
+                  <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>Pending Users</h3>
+                  <div class="stat-value" id="pending-users">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon warning">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>Pending Payments</h3>
+                  <div class="stat-value" id="pending-payments-count">0</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon error">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>Expired</h3>
+                  <div class="stat-value" id="expired-subs">0</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Expiring Soon Widget -->
+            <div class="expiring-soon-widget">
+              <h2><i class="fas fa-clock"></i> Expiring Soon</h2>
+              <div class="expiring-list" id="expiring-list">
+                <!-- Dynamic content -->
+              </div>
+            </div>
+
+            <div class="recent-activity">
+              <h2>Recent Activity</h2>
+              <div class="activity-list" id="recent-activity">
+                <!-- Dynamic content -->
+              </div>
+            </div>
+          </section>
+
+          <!-- Analytics Section (NEW) -->
+          <section id="analytics" class="section">
+            <div class="analytics-header">
+              <h2>Analytics Dashboard</h2>
+              <div class="date-filter">
+                <select id="analytics-period">
+                  <option value="7">Last 7 Days</option>
+                  <option value="30" selected>Last 30 Days</option>
+                  <option value="90">Last 90 Days</option>
+                  <option value="all">All Time</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Analytics Stats -->
+            <div class="analytics-stats">
+              <div class="analytics-card">
+                <div class="analytics-card-header">
+                  <h3>Total Watch Time</h3>
+                  <i class="fas fa-clock"></i>
+                </div>
+                <div class="analytics-value" id="total-watch-time">0 hrs</div>
+              </div>
+              <div class="analytics-card">
+                <div class="analytics-card-header">
+                  <h3>Total Searches</h3>
+                  <i class="fas fa-search"></i>
+                </div>
+                <div class="analytics-value" id="total-searches">0</div>
+              </div>
+              <div class="analytics-card">
+                <div class="analytics-card-header">
+                  <h3>Total Bookmarks</h3>
+                  <i class="fas fa-bookmark"></i>
+                </div>
+                <div class="analytics-value" id="total-bookmarks">0</div>
+              </div>
+              <div class="analytics-card">
+                <div class="analytics-card-header">
+                  <h3>Avg. Completion Rate</h3>
+                  <i class="fas fa-percentage"></i>
+                </div>
+                <div class="analytics-value" id="completion-rate">0%</div>
+              </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-grid">
+              <div class="chart-container">
+                <h3>Most Watched Content</h3>
+                <canvas id="mostWatchedChart"></canvas>
+              </div>
+              <div class="chart-container">
+                <h3>Popular Searches</h3>
+                <canvas id="popularSearchesChart"></canvas>
+              </div>
+              <div class="chart-container">
+                <h3>Content Type Distribution</h3>
+                <canvas id="contentTypeChart"></canvas>
+              </div>
+              <div class="chart-container">
+                <h3>User Engagement Over Time</h3>
+                <canvas id="engagementChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Top Lists -->
+            <div class="top-lists">
+              <div class="top-list-card">
+                <h3><i class="fas fa-fire"></i> Top 10 Most Watched</h3>
+                <div id="top-watched-list" class="top-list">
+                  <!-- Dynamic content -->
+                </div>
+              </div>
+              <div class="top-list-card">
+                <h3><i class="fas fa-star"></i> Top 10 Most Bookmarked</h3>
+                <div id="top-bookmarked-list" class="top-list">
+                  <!-- Dynamic content -->
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Users Section -->
+          <section id="users" class="section">
+            <div class="section-header">
+              <h2>Manage Users</h2>
+              <div class="section-actions">
+                <input
+                  type="text"
+                  class="search-input"
+                  id="user-search"
+                  placeholder="Search users..."
+                />
+                <div class="filter-group">
+                  <button class="filter-btn active" data-filter="all">
+                    All
+                  </button>
+                  <button class="filter-btn" data-filter="active">
+                    Active
+                  </button>
+                  <button class="filter-btn" data-filter="pending">
+                    Pending
+                  </button>
+                  <button class="filter-btn" data-filter="expired">
+                    Expired
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="user-grid" id="user-list">
+              <!-- Dynamic content -->
+            </div>
+          </section>
+
+          <!-- Add User Section -->
+          <section id="add-user" class="section">
+            <div class="form-container">
+              <h2>Add New User</h2>
+              <form id="add-user-form">
+                <div class="form-group">
+                  <input type="email" id="new-user-email" required />
+                  <label for="new-user-email">User Email</label>
+                </div>
+                <div class="form-group">
+                  <select id="subscription-duration" required>
+                    <option value="">Select Duration</option>
+                    <option value="1">1 Month</option>
+                    <option value="3">3 Months</option>
+                    <option value="6">6 Months</option>
+                    <option value="12">12 Months</option>
+                  </select>
+                  <label for="subscription-duration"
+                    >Subscription Duration</label
+                  >
+                </div>
+                <button type="submit" class="btn-primary">Add User</button>
+              </form>
+            </div>
+          </section>
+
+          <!-- Payments Section -->
+          <section id="payments" class="section">
+            <div class="section-header">
+              <h2>Pending Payment Approvals</h2>
+            </div>
+            <div class="payments-grid" id="pending-payments-list">
+              <!-- Dynamic content -->
+            </div>
+          </section>
+
+          <!-- Search History Section -->
+          <section id="search-history" class="section">
+            <div class="section-header">
+              <h2>User Search History</h2>
+              <input
+                type="text"
+                class="search-input"
+                id="search-filter"
+                placeholder="Filter searches..."
+              />
+            </div>
+            <div class="history-table" id="search-list">
+              <!-- Dynamic content -->
+            </div>
+          </section>
+
+          <!-- Watch History Section -->
+          <section id="watch-history" class="section">
+            <div class="section-header">
+              <h2>User Watch History</h2>
+              <input
+                type="text"
+                class="search-input"
+                id="watch-filter"
+                placeholder="Filter watches..."
+              />
+            </div>
+            <div class="history-table" id="watch-list">
+              <!-- Dynamic content -->
+            </div>
+          </section>
+
+          <!-- Bookmarks Section -->
+          <section id="bookmarks" class="section">
+            <div class="section-header">
+              <h2>User Bookmarks</h2>
+              <input
+                type="text"
+                class="search-input"
+                id="bookmark-filter"
+                placeholder="Filter bookmarks..."
+              />
+            </div>
+            <div class="history-table" id="bookmark-list">
+              <!-- Dynamic content -->
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <!-- User Detail Modal -->
+    <div id="user-detail-modal" class="modal hidden">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content large">
+        <div class="modal-close" id="close-user-detail">&times;</div>
+        <div id="user-detail-content">
+          <!-- Dynamic content -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Allow User Modal -->
+    <div id="allow-user-modal" class="modal hidden">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <div class="modal-close" onclick="closeAllowModal()">&times;</div>
+        <div class="modal-logo">
+          <h1>Approve User</h1>
+          <p>Grant subscription access to this user</p>
+        </div>
+        <form id="allow-user-form">
+          <div class="form-group">
+            <input type="email" id="allow-user-email" required disabled />
+            <label for="allow-user-email">User Email</label>
+          </div>
+          <div class="form-group">
+            <select id="allow-duration" required>
+              <option value="">Select Duration</option>
+              <option value="1">1 Month</option>
+              <option value="3">3 Months</option>
+              <option value="6">6 Months</option>
+              <option value="12">12 Months</option>
+            </select>
+            <label for="allow-duration">Subscription Duration</label>
+          </div>
+          <button type="submit" class="btn-primary">Approve User</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+      <div class="loader">
+        <div class="loader-spinner"></div>
+        <div class="loader-text">ONLYBINGE</div>
+      </div>
+    </div>
+
+    <script src="admin-portal-enhanced.js"></script>
+  </body>
+</html>
